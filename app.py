@@ -64,12 +64,7 @@ def do_search():
                 # inputs for counts taken
                 hash_tag = request.form['search_query']
                 number = int(request.form['max_tweets'])
-                # location = input("What is the location of party? \n")
-
-                # # Getting Geo ID for Places
-                # places = api.geo_search(query=location)
-                # # place id
-                # print(places[0])
+ 
 
                 tweetsPerQry = 100  # this is the max the API permits
 
@@ -87,40 +82,37 @@ def do_search():
                 fw = open(outputFile, 'wb')
 
                 tweetCount = 0
-                print("Downloading max {0} tweets".format(number))
                 while tweetCount < number:
                     try:
                         if (max_id <= 0):
                             if (not sinceId):
                                 new_tweets = api.search(q=hash_tag, count=tweetsPerQry, tweet_mode='extended', lang='en')
                                 tweetCount += len(new_tweets)
-                                print("Downloaded {0} tweets".format(tweetCount))
+            
                             else:
                                 new_tweets = api.search(q=hash_tag, count=tweetsPerQry,
                                                         since_id=sinceId, tweet_mode='extended', lang='en')
-                                print("here 2")
+                                
                         else:
                             if (not sinceId):
                                 new_tweets = api.search(q=hash_tag, count=tweetsPerQry,
                                                         max_id=str(max_id - 1), tweet_mode='extended', lang='en')
-                                print("here 3")
+                                
                             else:
                                 new_tweets = api.search(q=hash_tag, count=tweetsPerQry,
                                                         max_id=str(max_id - 1),
                                                         since_id=sinceId, tweet_mode='extended', lang='en')
-                                print("here 4")
+                                
                             if not new_tweets:
-                                print("No more tweets found")
                                 break
 
-                        # print(new_tweets)
+
 
                         tweets = new_tweets
                         for tweet in tweets:
                             dataset.append(tweet.full_text)
                         #data += pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
                         tweetCount += len(new_tweets)
-                        print("Downloaded {0} tweets".format(tweetCount))
                         max_id = new_tweets[-1].id
                     except tweepy.TweepError as e:
                         print(str(e))
@@ -132,7 +124,6 @@ def do_search():
                 inputFile = 'test.data'
                 fd = open(inputFile, 'rb')
                 dataset = pickle.load(fd)
-                print(dataset)
 
 
                 import nltk
